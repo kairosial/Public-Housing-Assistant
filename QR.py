@@ -3,7 +3,7 @@ import requests
 import re
 import os
 
-load_dotenv("E:/work/MS_project_2/code/.env")
+load_dotenv()
 # 사용자 프롬프트
 # Azure OpenAI API의 엔드포인트 URL
 OPENAI_ENDPOINT = os.getenv('OPENAI_ENDPOINT_2')
@@ -28,8 +28,7 @@ def query_rewrite(user_query):
             {"role": "system", "content": """너는 질문을 키워드 형태로 변환하는 query rewrite 봇이야
              예시
              사용자의 질문 : 그래서 뭘 내야돼?
-             검색용 질의 : 필요 제출 서류
-             """},
+             검색용 질의 : 필요 제출 서류"""},
             {"role": "user", "content": prompt}
         ],
         "temperature": 0.7,

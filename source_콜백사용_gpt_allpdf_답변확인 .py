@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-from RAG import generate_answer_with_rag
+from RAG import generate_answer_with_rag, generate_answer_with_llm
 from QR import query_rewrite, yoyak
 import threading
 import time
@@ -22,7 +22,7 @@ def kakao_webhook():
     callback_url = req['userRequest'].get('callbackUrl')
     source_filter = req.get("action", {}).get("clientExtra", {}).get("source_filter")
 
-    print("📥 질문 수신:", user_input)
+    print("\n📥 질문 수신:", user_input)
     print("🔁 callback_url:", callback_url)
     print("🔑 source_filter:", source_filter)
 
@@ -54,14 +54,8 @@ def kakao_webhook():
     # ✅ 3) 일반 질문 처리 (폴백 블록)
     chosen_file = user_file_choices.get(user_id)
     if not chosen_file:
-        return jsonify({
-            "version": "2.0",
-            "template": {
-                "outputs": [{
-                    "simpleText": {"text": "❗먼저 '도움말'에서 파일을 선택해주세요."}
-                }]
-            }
-        })
+        print("⚠️ 선택된 파일 없음 → 전체 데이터 또는 기본 응답으로 처리합니다.")
+        chosen_file = None  # 전체 소스로 RAG 처리하거나 기본 설정으로
 
     user_input = query_rewrite(user_input)
 
@@ -73,7 +67,10 @@ def kakao_webhook():
             "data": { "text": "" }
         })
     else:
-        answer = generate_answer_with_rag(user_input, source_filter=chosen_file)
+        if chosen_file:
+            answer = generate_answer_with_rag(user_input, source_filter=chosen_file)
+        else:
+            answer = generate_answer_with_llm(user_input)
         user_answers[user_id] = answer
         return jsonify({
             "version": "2.0",
@@ -93,31 +90,57 @@ def process_request(user_input, callback_url, source_filter, user_id):
     print("⏱ 백그라운드에서 LLM 처리 시작")
     start = time.time()
 
-    answer = generate_answer_with_rag(user_input, source_filter)
-    user_answers[user_id] = answer
-    elapsed = time.time() - start
-    print(f"✅ 응답 완료 (처리 시간: {elapsed:.2f}초)")
+    if source_filter:
+        answer = generate_answer_with_rag(user_input, source_filter)
+        user_answers[user_id] = answer
+        elapsed = time.time() - start
+        print(f"✅ 응답 완료 (처리 시간: {elapsed:.2f}초)")
 
-    response_body = {
-        "version": "2.0",
-        "template": {
-            "outputs": [{ "simpleText": { "text": answer } }],
-            "quickReplies": [
-                {
-                    "label": "요약하기",
-                    "action": "message",
-                    "messageText": "요약하기"
-                }
-            ]
+        response_body = {
+            "version": "2.0",
+            "template": {
+                "outputs": [{ "simpleText": { "text": answer } }],
+                "quickReplies": [
+                    {
+                        "label": "요약하기",
+                        "action": "message",
+                        "messageText": "요약하기"
+                    }
+                ]
+            }
         }
-    }
-    headers = { "Content-Type": "application/json" }
+        headers = { "Content-Type": "application/json" }
+        try:
+            resp = requests.post(callback_url, headers=headers, json=response_body)
+            print("📤 Callback 응답 전송, 상태 코드:", resp.status_code)
+        except Exception as e:
+            print("❌ Callback 전송 실패:", e)
+    
+    else:
+        answer = generate_answer_with_llm(user_input)
+        user_answers[user_id] = answer
+        elapsed = time.time() - start
+        print(f"✅ 응답 완료 (처리 시간: {elapsed:.2f}초)")
 
-    try:
-        resp = requests.post(callback_url, headers=headers, json=response_body)
-        print("📤 Callback 응답 전송, 상태 코드:", resp.status_code)
-    except Exception as e:
-        print("❌ Callback 전송 실패:", e)
+        response_body = {
+            "version": "2.0",
+            "template": {
+                "outputs": [{ "simpleText": { "text": answer } }],
+                "quickReplies": [
+                    {
+                        "label": "요약하기",
+                        "action": "message",
+                        "messageText": "요약하기"
+                    }
+                ]
+            }
+        }
+        headers = { "Content-Type": "application/json" }
+        try:
+            resp = requests.post(callback_url, headers=headers, json=response_body)
+            print("📤 Callback 응답 전송, 상태 코드:", resp.status_code)
+        except Exception as e:
+            print("❌ Callback 전송 실패:", e)
 
 if __name__ == "__main__":
     print("✅ Flask 서버 실행 중 (port 5000)...")

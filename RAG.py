@@ -7,7 +7,7 @@ from langchain_openai import AzureOpenAIEmbeddings
 from langchain_community.vectorstores import AzureSearch
 
 # .env 로딩
-load_dotenv("E:/work/MS_project_2/code/.env")
+load_dotenv()
 
 # 환경변수
 embedding_api_key = os.getenv('Embedding_API_KEY')
@@ -95,6 +95,22 @@ def request_gpt(prompt: str) -> str:
         print("❌ GPT 요청 실패:", response.status_code, response.text)
         return "⚠️ 오류가 발생했습니다."
 
+# 마크다운 제거 후처리
+def remove_markdown(text: str) -> str:
+    # 1) 헤더(# ...) 제거
+    text = re.sub(r'^#{1,6}\s+', '', text, flags=re.MULTILINE)
+    
+    # 2) 볼드/이탤릭(*...* 또는 **...**) 제거
+    text = re.sub(r'\*{1,2}([^*]+)\*{1,2}', r'\1', text)
+    
+    # 3) 언더스코어(_..._) 제거
+    text = re.sub(r'_{1,2}([^_]+)_{1,2}', r'\1', text)
+    
+    # 4) 나머지 백틱(`) 등 제거
+    text = text.replace('`', '')
+    
+    return text
+
 # 최종 RAG 응답 생성 함수
 def generate_answer_with_rag(query: str, source_filter: str = None, top_k: int = 3) -> str:
     results = request_ai_search(query, source_filter=source_filter, k=top_k)
@@ -103,20 +119,39 @@ def generate_answer_with_rag(query: str, source_filter: str = None, top_k: int =
 
     #context = "\n\n".join([f"[doc{i+1}]\n{item['content']}" for i, item in enumerate(results)])
     context = "\n\n".join([f"[{item['source']}]\n{item['content']}" for item in results])
-    prompt = f"""사용자의 질문에 대해 아래 문서를 참고해서 간단하고 핵심적인 답변을 만들어줘.
-                또한 답변에 어떤 문서에서 나온 정보인지 간단히 출처를 괄호로 남겨줘.
-                출처는 문장 맨 위에 남기고 \n 한 뒤에 답변
-                답변은 1000자 이내로 작성해줘.
-[사용자 질문]
-{query}
+    prompt = f"""You are an expert AI assistant. Based on the document excerpts below, please answer the question in clear, concise Korean. 
+Please do not use any Markdown syntax (like '#', '*', '_', backticks, etc.). 
+Use plain text for headings or bullet points if needed.
 
-[참고 문서]
+Document Excerpts:
 {context}
 
-답변:"""
+Question:
+{query}
+
+Answer in Korean without Markdown:"""
+    raw_answer = request_gpt(prompt)
+    clean_answer = remove_markdown(raw_answer)
+    return clean_answer
+
+# RAG 없이 순수 LLM만 사용해 답변 생성
+def generate_answer_with_llm(query: str) -> str:
+    prompt = f"""You are a professional AI assistant specializing in public policy and housing information in South Korea.
+
+Your task is to answer the user's question clearly, **in Korean**, using accurate and up-to-date knowledge.
+
+Instructions:
+- Provide a concise answer within 300 characters.
+- Use polite, reader-friendly Korean appropriate for civil service guidance.
+- Do **not** use Markdown, special characters (like `#`, `*`, `_`), or emojis.
+- Avoid repeating the user's question in your answer.
+
+User's Question:
+{query}
+
+Answer (in Korean, under 300 characters):"""
     return request_gpt(prompt)
 
-#prompt = '나 경기도 사는 멋쟁이 윤홍원... 나이는 26살이고 대학은 졸업했으나 무직이야 근데 내집마련을 하고싶은데 추천할만한 공고문 있어?'
 prompt = '''경기도 거주,나이는 26세, 대학 졸업, 무직
             제출해야할 서류'''
 new_prompt = query_rewrite(prompt)
