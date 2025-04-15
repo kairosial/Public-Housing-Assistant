@@ -119,18 +119,27 @@ def generate_answer_with_rag(query: str, source_filter: str = None, top_k: int =
 
     #context = "\n\n".join([f"[doc{i+1}]\n{item['content']}" for i, item in enumerate(results)])
     context = "\n\n".join([f"[{item['source']}]\n{item['content']}" for item in results])
-    prompt = f"""You are an expert AI assistant. Based on the document excerpts below, please answer the question in clear, concise Korean. 
-Please do not use any Markdown syntax (like '#', '*', '_', backticks, etc.). 
-Use plain text for headings or bullet points if needed.
-
-Document Excerpts:
-{context}
-
-Question:
-{query}
-
-Answer in Korean without Markdown:"""
+    prompt = f"""You are an expert AI assistant. Based on the document excerpts below, answer the question in clear, concise Korean by organizing your answer into sections. Return the answer in valid JSON format using the following schema:
+    
+    {{
+      "sections": [
+        {{
+          "title": "Section Title",
+          "content": "Section Content"
+        }},
+        ...
+      ]
+    }}
+    
+    Document Excerpts:
+    {context}
+    
+    Question:
+    {query}
+    
+    Answer in Korean as valid JSON without using any Markdown syntax:"""
     raw_answer = request_gpt(prompt)
+    # 만약 LLM의 결과에 불필요한 마크다운 문법이 남아있다면 후처리할 수 있음.
     clean_answer = remove_markdown(raw_answer)
     return clean_answer
 

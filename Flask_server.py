@@ -72,10 +72,35 @@ def kakao_webhook():
         else:
             answer = generate_answer_with_llm(user_input)
         user_answers[user_id] = answer
+
+        # 여기서 answer가 JSON 문자열(구조화된 답변)라고 가정
+        try:
+            answer_json = json.loads(answer)
+            sections = answer_json.get("sections", [])
+        except json.JSONDecodeError:
+            # JSON 파싱 실패시 fallback: 전체 답변을 하나의 섹션으로 처리
+            sections = [{"title": "답변", "content": answer}]
+
+        # 각 섹션을 BasicCard 형식 아이템으로 변환
+        items = []
+        for sec in sections:
+            items.append({
+                "title": sec.get("title", ""),
+                "description": sec.get("content", "")
+            })
+
+        # 최종 카카오톡 Carousel 응답 JSON 구성
         return jsonify({
             "version": "2.0",
             "template": {
-                "outputs": [{ "simpleText": { "text": answer } }],
+                "outputs": [
+                    {
+                        "carousel": {
+                            "type": "basicCard",
+                            "items": items
+                        }
+                    }
+                ],
                 "quickReplies": [
                     {
                         "label": "요약하기",
@@ -92,55 +117,53 @@ def process_request(user_input, callback_url, source_filter, user_id):
 
     if source_filter:
         answer = generate_answer_with_rag(user_input, source_filter)
-        user_answers[user_id] = answer
-        elapsed = time.time() - start
-        print(f"✅ 응답 완료 (처리 시간: {elapsed:.2f}초)")
-
-        response_body = {
-            "version": "2.0",
-            "template": {
-                "outputs": [{ "simpleText": { "text": answer } }],
-                "quickReplies": [
-                    {
-                        "label": "요약하기",
-                        "action": "message",
-                        "messageText": "요약하기"
-                    }
-                ]
-            }
-        }
-        headers = { "Content-Type": "application/json" }
-        try:
-            resp = requests.post(callback_url, headers=headers, json=response_body)
-            print("📤 Callback 응답 전송, 상태 코드:", resp.status_code)
-        except Exception as e:
-            print("❌ Callback 전송 실패:", e)
-    
     else:
         answer = generate_answer_with_llm(user_input)
-        user_answers[user_id] = answer
-        elapsed = time.time() - start
-        print(f"✅ 응답 완료 (처리 시간: {elapsed:.2f}초)")
+    
+    user_answers[user_id] = answer
+    elapsed = time.time() - start
+    print(f"✅ 응답 완료 (처리 시간: {elapsed:.2f}초)")
 
-        response_body = {
-            "version": "2.0",
-            "template": {
-                "outputs": [{ "simpleText": { "text": answer } }],
-                "quickReplies": [
-                    {
-                        "label": "요약하기",
-                        "action": "message",
-                        "messageText": "요약하기"
+    try:
+        answer_json = json.loads(answer)
+        sections = answer_json.get("sections", [])
+    except json.JSONDecodeError:
+        sections = [{"title": "답변", "content": answer}]
+    
+    items = []
+    for sec in sections:
+        items.append({
+            "title": sec.get("title", ""),
+            "description": sec.get("content", "")
+        })
+    
+    response_body = {
+        "version": "2.0",
+        "template": {
+            "outputs": [
+                {
+                    "carousel": {
+                        "type": "basicCard",
+                        "items": items
                     }
-                ]
-            }
+                }
+            ],
+            "quickReplies": [
+                {
+                    "label": "요약하기",
+                    "action": "message",
+                    "messageText": "요약하기"
+                }
+            ]
         }
-        headers = { "Content-Type": "application/json" }
-        try:
-            resp = requests.post(callback_url, headers=headers, json=response_body)
-            print("📤 Callback 응답 전송, 상태 코드:", resp.status_code)
-        except Exception as e:
-            print("❌ Callback 전송 실패:", e)
+    }
+    
+    headers = { "Content-Type": "application/json" }
+    try:
+        resp = requests.post(callback_url, headers=headers, json=response_body)
+        print("📤 Callback 응답 전송, 상태 코드:", resp.status_code)
+    except Exception as e:
+        print("❌ Callback 전송 실패:", e)
 
 if __name__ == "__main__":
     print("✅ Flask 서버 실행 중 (port 5000)...")
