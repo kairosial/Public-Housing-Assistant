@@ -66,9 +66,8 @@ def request_gpt(prompt: str) -> str:
 
 def convert_md_tables_with_llm_parallel(md_text: str, max_workers=5) -> str:
     soup = BeautifulSoup(md_text, 'html.parser')
-    tables = soup.find_all('table')
-    table_strs = [str(table) for table in tables]
-    unique_tables = list(set(table_strs))
+    tables = soup.find_all("table")
+
     table_to_text = {}
 
     def process_table(table_html):
@@ -79,14 +78,14 @@ def convert_md_tables_with_llm_parallel(md_text: str, max_workers=5) -> str:
         return table_html, result
 
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
-        futures = [executor.submit(process_table, tbl) for tbl in unique_tables]
+        futures = [executor.submit(process_table, tbl) for tbl in tables]
         for future in as_completed(futures):
             tbl_html, gpt_result = future.result()
             table_to_text[tbl_html] = gpt_result
 
-    for original_table in table_strs:
-        if original_table in table_to_text:
-            md_text = md_text.replace(original_table, table_to_text[original_table])
+    for table_tag, gpt_text in table_to_text.items():
+        table_tag.replace_with(gpt_text)
+    md_text = str(soup)
 
     return md_text
 
