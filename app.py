@@ -7,34 +7,9 @@ import threading
 import time
 import json
 import requests
+from public_notice import doc_links
 
 app = Flask(__name__)
-
-
-doc_links = {
-    "(LH)화성동탄2 10년 분양전환공공임대주택(리츠) 예비입주자모집공고('25.03)": "https://drive.google.com/file/d/1XxPHrqkEUr314legVOFCwe2G1w8Lkqe7/view?usp=sharing",
-    "(LH)청년신혼부부매입임대리츠-2502-경기북부": "https://drive.google.com/file/d/19fi78YxpdHt-fHy0nwykPWzWAlTuHP3B/view?usp=sharing",
-    "(LH)청년신혼부부매입임대리츠-2502-경기남부": "https://drive.google.com/file/d/1Jc-BLthfJ1qyxMt3S5JA6a8ck8T3spxw/view?usp=sharing",
-    "(LH)김포한강 Ac-05블록 10년 공공임대주택(리츠) 예비입주자 모집 공고": "https://drive.google.com/file/d/1Kd9tCOPDWDa-Sdfc8-7IgkubHpMMUGwk/view?usp=sharing",
-    "(LH)군포시 영구임대주택 예비입주자 모집": "https://drive.google.com/file/d/1GHKyOBfRv5JhezXcLTG0xyi5xmg_PS2L/view?usp=sharing",
-    "(LH)관악봉천 H-1ㆍ2ㆍ3BL 행복주택 입주자격완화 추가모집": "https://drive.google.com/file/d/1zvlff3xFf_ZHUpCS2rhyalPCPeZhQMAd/view?usp=sharing",
-    "(LH)2025년 청년 전세임대 1순위 입주자 수시모집": "https://drive.google.com/file/d/1rxmq1L7vDMV9lSYsKxZpFkvQeUCiDezP/view?usp=sharing",
-    "(LH)[정정공고]전북 남부권 지역 국민임대주택 예비입주자 모집": "https://drive.google.com/file/d/1F4IwYQJHIT3cOAQQNlB9rZG4Va9LsTVE/view?usp=sharing",
-    "(LH)[정정공고]구리갈매 이스트힐 10년 공공임대주택 예비입주자 모집 공고": "https://drive.google.com/file/d/1aQR9pFFPJ3e5Zwk94NDQBegtpoDyeSKE/view?usp=sharing",
-    "(LH)[정정공고][서울지역본부] 기존주택 등 매입임대주택 예비입주자 모집공고": "https://drive.google.com/file/d/1TmXmTNIjC_dnzHPEfoL6Ai4TV6doRVbY/view?usp=sharing",
-    "(LH)[정정공고][서울지역본부] 고령자 매입임대주택 예비입주자 모집공고": "https://drive.google.com/file/d/1cUJSi36rMt2S0b7KWP5fAq9Q5ZRsfxDU/view?usp=sharing",
-    "(LH)[정정공고][경기남부] 25년 1차 청년 매입임대주택 예비입주자 모집공고": "https://drive.google.com/file/d/1Gd5WmTx8Yve5deDm2CyoDyQK-9XZvxBl/view?usp=sharing",
-    "(LH)[서울지역본부] 25년 1차 청년 매입임대주택 예비입주자 모집공고": "https://drive.google.com/file/d/1NbKhqstJ2SQ0bSJzAeY-tjFVkTTe0Lf2/view?usp=sharing",
-    "(LH)[경기북부] 25년 1차 청년매입임대 예비입주자 모집공고": "https://drive.google.com/file/d/1qMRIMOd51hNJSnWjPJuf1svpII6PaRSd/view?usp=sharing",
-    "(LH)(인천) 청년.신혼부부 매입임대리츠주택 입주자 모집공고": "https://drive.google.com/file/d/1v4e6stxAC9E9bO5C6tZpaaMDb98nzggG/view?usp=sharing",
-    "(GH)[주택] 25년 1차 청년매입임대주택 예비입주자 모집공고": "https://drive.google.com/file/d/1A-h0NMaAF3oEt0QrNr6FhamA8EJbQOWc/view?usp=sharing",
-    "(GH)[주택] 25년 1차 기존주택 등 매입임대주택 예비입주자 모집공고(경기도 27개 시군)": "https://drive.google.com/file/d/1nrEyfpDpA7iehmhkd-KzafdEZTQVWg2N/view?usp=sharing"
-
-}
-
-
-
-
 
 # 사용자별 source_filter 저장
 user_file_choices = {}
@@ -207,6 +182,11 @@ def kakao_webhook():
                         "label": "요약하기",
                         "action": "message",
                         "messageText": "요약하기"
+                    },
+                    {
+                        "label": "🐶 초기화면 🐶",
+                        "action": "block",
+                        "blockId": "67fb9b2c202e764481ad480e"
                     }
                 ]
             }
@@ -421,6 +401,11 @@ def process_request(user_input, callback_url, source_filter, user_id):
                     "label": "요약하기",
                     "action": "message",
                     "messageText": "요약하기"
+                },
+                {
+                    "label": "🐶 초기화면 🐶",
+                    "action": "block",
+                    "blockId": "67fb9b2c202e764481ad480e"
                 }
             ]
         }

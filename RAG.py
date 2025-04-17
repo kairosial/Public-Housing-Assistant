@@ -3,8 +3,10 @@ from QR import query_rewrite
 import os
 import requests
 import re
+import json
 from langchain_openai import AzureOpenAIEmbeddings
 from langchain_community.vectorstores import AzureSearch
+from public_notice import doc_links
 
 # .env 로딩
 load_dotenv()
@@ -141,7 +143,24 @@ def generate_answer_with_rag(query: str, source_filter: str = None, top_k: int =
     raw_answer = request_gpt(prompt)
     # 만약 LLM의 결과에 불필요한 마크다운 문법이 남아있다면 후처리할 수 있음.
     clean_answer = remove_markdown(raw_answer)
-    return clean_answer
+
+    try:
+        answer_json = json.loads(clean_answer)
+        sections = answer_json.get("sections", [])
+    except json.JSONDecodeError:
+        sections = [{"title": "답변", "content": clean_answer}]
+
+    # 공고문 정보 카드 삽입
+    if source_filter:
+        doc_title = source_filter.replace(".pdf", "")
+        matched_url = doc_links.get(doc_title, "#")
+        sections.insert(0, {
+            "title": "📄 선택한 공고문",
+            "content": f"{doc_title}\n📎 링크: {matched_url}"
+        })
+
+    final_answer = json.dumps({"sections": sections}, ensure_ascii=False)
+    return final_answer
 
 # RAG 없이 순수 LLM만 사용해 답변 생성
 def generate_answer_with_llm(query: str) -> str:

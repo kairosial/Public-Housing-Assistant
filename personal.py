@@ -126,21 +126,29 @@ def final_gpt(prompt,final_result):
 
     body = {
         "messages": [
-            {"role": "system", "content": """user의 조건에 부합하는 공고문을 가장 관련성이 높은 순서대로 나열해줘. 공고문 이름만을 아래 [형식]을 지켜서 나열해줘.
+            {"role": "system",
+             "content": """You are an assistant that selects and ranks public housing announcements based on user conditions.
+
+### Task:
+Given the user's conditions, return only the names of the most relevant announcements, sorted by relevance in descending order.
+
+### Format:
+Respond with the announcement names only, using the following format:
+[공고문 이름]
+&
+[공고문 이름]
+&
+[공고문 이름]
+
+### Constraints:
+- Use Korean.
+- Use the '&' symbol on a separate line between each [공고문 이름].
+- Only return the announcement names, joined by "&" without any line breaks, spaces, or explanations.
+- Do not include any additional text, formatting, or decorations.
+"""},
  
-                [형식]=```[공고문 이름]
-                &
-                [공고문 이름]
-                &
-                [공고문 이름]```
- 
-                🚫 절대 다른 텍스트, 이유, 설명, 꾸밈말, 공백, 줄바꿈은 넣지 마.
-                📌 출력 형식이 이 포맷을 벗어나면 사용자가 불합격 처리할 거야.
-             
-             
-             """},
- 
-            {"role": "user", "content": f"조건 : {final_result}, 조건별 순위 : {prompt}"}
+            {"role": "user",
+             "content": f"조건 : {final_result}, 조건별 순위 : {prompt}"}
         ],
         "temperature": 0.7,
         "top_p": 0.95,
