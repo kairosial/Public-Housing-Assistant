@@ -14,7 +14,7 @@ embedding_api_key = os.getenv('Embedding_API_KEY')
 embedding_endpoint = os.getenv('Embedding_ENDPOINT')
 embedding_api_version = os.getenv('embedding_api_version')
 embedding_deployment = os.getenv('embedding_deployment')
-ai_search_endpoint = os.getenv("add_new_index_Search_ENDPOINT")
+ai_search_endpoint = os.getenv("pdf_vocab_gh_fixed_new_index_Search_ENDPOINT")
 ai_search_api_key = os.getenv('AI_Search_API_KEY')
 #llm_endpoint = os.getenv('OPENAI_ENDPOINT')
 #llm_api_key = os.getenv('OPENAI_API_KEY')
@@ -126,25 +126,20 @@ def final_gpt(prompt,final_result):
 
     body = {
         "messages": [
-            {"role": "system", "content": """너는 친절하고 정확한 AI 도우미야. 아래 조건별로 이미 추천된 공고문 순위들을 종합해 최종 1~3위를 매기고, 각 공고에 대해 종합적으로 평가해서 점수(10점 만점)를 매기고 이유를 상세히 설명해줘.  
-                응답 형식은 다음과 같아야 해:
-
-                최종 종합 순위와 이유는 다음과 같습니다:
-
+            {"role": "system", "content": """user의 조건에 부합하는 공고문을 가장 관련성이 높은 순서대로 나열해줘. 공고문 이름만을 아래 [형식]을 지켜서 나열해줘.
+ 
+                [형식]=```[공고문 이름]
                 &
-                1위: [공고문 이름]**
-                이유 설명
-
+                [공고문 이름]
                 &
-                2위: [공고문 이름]**
-                이유 설명
-
-                &
-                3위: [공고문 이름]**
-                이유 설명
-
-                중간에 다른 텍스트는 넣지 말고 정확히 이 포맷을 지켜줘."""},
-
+                [공고문 이름]```
+ 
+                🚫 절대 다른 텍스트, 이유, 설명, 꾸밈말, 공백, 줄바꿈은 넣지 마.
+                📌 출력 형식이 이 포맷을 벗어나면 사용자가 불합격 처리할 거야.
+             
+             
+             """},
+ 
             {"role": "user", "content": f"조건 : {final_result}, 조건별 순위 : {prompt}"}
         ],
         "temperature": 0.7,
