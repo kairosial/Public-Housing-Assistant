@@ -5,9 +5,9 @@ def process_file(input_file_path, output_file_path=None):
     Process an input file through Azure AI to convert HTML tables to text.
     """
     load_dotenv()
-    endpoint = os.getenv("ENDPOINT_URL")
-    deployment = os.getenv("DEPLOYMENT_NAME")
-    subscription_key = os.getenv("AZURE_OPENAI_KEY")
+    endpoint = os.getenv("OPENAI_ENDPOINT")
+    deployment = os.getenv("embedding_deployment")
+    subscription_key = os.getenv("OPENAI_API_KEY")
     
     if not all([endpoint, deployment, subscription_key]):
         raise ValueError("환경변수 누락: ENDPOINT_URL, DEPLOYMENT_NAME, AZURE_OPENAI_KEY를 확인하세요.")

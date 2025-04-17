@@ -21,7 +21,7 @@ def azure_md_preprocessing(azure_md):
     # 전처리 및 페이지 재조합
     restructured_pages = []
 
-    for page_number, content in page_pairs:
+    for content, page_number in page_pairs:
         lines = content.splitlines()
         new_lines = []
 
@@ -42,9 +42,9 @@ def azure_md_preprocessing(azure_md):
         # 전처리된 페이지 내용 조합
         modified_content = '\n'.join(new_lines)
         # page_comment = f'<!-- PageNumber="{page_number.strip()}" -->'
-        restructured_pages.append(f"{page_number.strip()}")
+        restructured_pages.append(f"{modified_content.strip()}")
 
-        return restructured_pages
+    return restructured_pages
 
 def split_pages(markdown_text):
     pattern = r'<!-- PageNumber="- (\d+) -" -->\s*<!-- PageBreak -->'
@@ -132,26 +132,31 @@ def replace_table_html(restructured_pages, extended_page_list, table_df_list):
     # 전처리 및 페이지 재조합
     pattern = re.compile(r'<table[\s\S]*?</table>', re.IGNORECASE)
 
-    for i in range(len(extended_page_list)):
-        page_list = extended_page_list[i]
-        df = table_df_list[i]
-        new_html_table = df.to_html(index=False, escape=False)
+    if table_df_list:
 
-        # 첫 페이지
-        first_page = page_list[0]
-        page_md = restructured_pages[first_page-1]
-        matches = list(pattern.finditer(page_md))
-        matched_table = matches[-1].group()
-        new_page_md = page_md.replace(matched_table, new_html_table)
-        restructured_pages[first_page-1] = new_page_md
+        for i in range(len(extended_page_list)):
+            page_list = extended_page_list[i]
+            df = table_df_list[i]
+            new_html_table = df.to_html(index=False, escape=False)
 
-        # 마지막 페이지 + 나머지
-        for i in range(1, len(page_list)):
-            page_md = restructured_pages[page_list[i]-1]
+            # 첫 페이지
+            first_page = page_list[0]
+            page_md = restructured_pages[first_page-1]
             matches = list(pattern.finditer(page_md))
-            matched_table = matches[0].group()
-            new_page_md = page_md.replace(matched_table, '')
-            restructured_pages[page_list[i]-1] = new_page_md
-    
-    final_md = '\n'.join(restructured_pages)
+            matched_table = matches[-1].group()
+            new_page_md = page_md.replace(matched_table, new_html_table)
+            restructured_pages[first_page-1] = new_page_md
+
+            # 마지막 페이지 + 나머지
+            for i in range(1, len(page_list)):
+                page_md = restructured_pages[page_list[i]-1]
+                matches = list(pattern.finditer(page_md))
+                matched_table = matches[0].group()
+                new_page_md = page_md.replace(matched_table, '')
+                restructured_pages[page_list[i]-1] = new_page_md
+        
+        final_md = '\n'.join(restructured_pages)
+
+    else:
+        final_md = '\n'.join(restructured_pages)
     return final_md

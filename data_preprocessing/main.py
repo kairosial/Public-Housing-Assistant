@@ -32,12 +32,12 @@ def get_md_from_azure(): # for all pdf
         md_content = analyze_pdf_to_markdown(sas_url)
         print("✅ Document Intelligence 분석 완료")
 
-        # 3. GPT 테이블 변환
-        md_with_tables = convert_md_tables_with_llm_parallel(md_content)
-        print("✅ GPT 테이블 변환 완료")
+        # # 3. GPT 테이블 변환
+        # md_with_tables = convert_md_tables_with_llm_parallel(md_content)
+        # print("✅ GPT 테이블 변환 완료")
 
         # 4. 헤더 전처리
-        final_md = preprocess_markdown_headers(md_with_tables)
+        final_md = preprocess_markdown_headers(md_content)
 
         # 5. 저장
         with open(md_path, 'w', encoding='utf-8') as f:
@@ -73,24 +73,25 @@ def get_new_table_from_pymu(cleaned_docs, extended_page_list):
     table_df_list = []
 
     for page_list in extended_page_list:
-        full_text = merge_pagetext(cleaned_docs, page_list)
-        table_list = extract_combined_tables(full_text)
+        if page_list:
+            full_text = merge_pagetext(cleaned_docs, page_list)
+            table_list = extract_combined_tables(full_text)
 
-        # 행이 가장 많은 표 하나만 가져오기
-        max_table = max(table_list, key=count_rows)
+            # 행이 가장 많은 표 하나만 가져오기
+            max_table = max(table_list, key=count_rows)
 
-        # 표 재구성
-        merged_table_md = make_merged_table_md(max_table)
-        df = make_merged_table_df(merged_table_md)
+            # 표 재구성
+            merged_table_md = make_merged_table_md(max_table)
+            df = make_merged_table_df(merged_table_md)
 
-        target_df = df.ffill(axis=1).ffill(axis=0)
-        table_df_list.append(target_df)
+            target_df = df.ffill(axis=1).ffill(axis=0)
+            table_df_list.append(target_df)
 
-        return table_df_list
+    return table_df_list
 
 def main():
-    # pdf -> azure di .md (all files)
-    get_md_from_azure()
+    # # pdf -> azure di .md (all files)
+    # get_md_from_azure()
 
     # azure md 수정 작업 (for each file)
     pdf_files = glob(os.path.join(PDF_FOLDER, "*.pdf"))
@@ -101,13 +102,17 @@ def main():
         pdf_path = rf"{PDF_FOLDER}\{pdf_name}"
         md_file_name = f"{filename}.md"
         md_file_path = rf"{MD_FOLDER}\{md_file_name}"
+        new_md_file_path = rf"{MD_FOLDER}\new_markdown\{md_file_name}"
         final_text_name = f"{filename}.txt"
         final_text_path = rf"{TXT_FOLDER}\{final_text_name}"
 
         # markdown 파일 읽기
-        with open("document_result.md", "r", encoding="utf-8") as file:
+        with open(md_file_path, "r", encoding="utf-8") as file:
             azure_md = file.read()
+
+        # 헤더 전처리 코드
         
+        print(f"filename: {pdf_name}")
         cleaned_docs = get_md_from_pymu(pdf_path)
         restructured_pages, extended_page_list = edit_md_from_azure(azure_md)
         table_df_list = get_new_table_from_pymu(cleaned_docs, extended_page_list)
@@ -116,8 +121,11 @@ def main():
         final_md = replace_table_html(restructured_pages, extended_page_list, table_df_list)
 
         # 최종 마크다운 저장
-        with open("output.md", "w", encoding="utf-8") as f:
+        with open(new_md_file_path, "w", encoding="utf-8") as f:
             f.write(final_md)
 
-        # table -> LLM -> text
-        process_file(md_file_path, final_text_path)
+        # # table -> LLM -> text
+        # process_file(new_md_file_path, final_text_path)
+
+if __name__=="__main__":
+    main()

@@ -103,9 +103,6 @@ def make_merged_table_md(merged_text):
     # 첫 번째 컬럼만 헤더 공백값 전처리
     lines[0] = lines[0].replace('||', '|Col|')
 
-    # 여기서 지우자 잘못 들어간 구분선
-    
-
     # 결과를 저장할 리스트
     merged_table = []
     merged_table.extend(lines[:2])
@@ -149,7 +146,7 @@ def make_merged_table_df(merged_text):
     df = pd.read_csv(StringIO("\n".join([header] + data_rows)), sep="|", engine="python", skipinitialspace=True)
     df = df.iloc[:, 1:-1]  # 앞뒤 공백 컬럼 제거
     df.columns = column_list 
-    df = df[0:].reset_index(drop=True)  # 데이터만 유지
+    df = df.reset_index(drop=True)  # 데이터만 유지
 
     # ffill은 따로 해주기 (병합셀 심화 과정- 함수 안에서 하거나 반환한 테이블 전처리 따로)
     return df
