@@ -1,6 +1,6 @@
 import re
 from flask import Flask, request, jsonify
-from RAG2 import generate_answer_with_rag, generate_answer_with_llm
+from RAG import generate_answer_with_rag, generate_answer_with_llm
 from QR import query_rewrite, yoyak
 from personal import *
 import threading

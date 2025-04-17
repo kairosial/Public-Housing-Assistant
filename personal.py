@@ -1,5 +1,5 @@
 from dotenv import load_dotenv
-from QR import query_rewrite_2
+from QR import query_rewrite
 import os
 import requests
 import re
@@ -7,7 +7,7 @@ from langchain_openai import AzureOpenAIEmbeddings
 from langchain_community.vectorstores import AzureSearch
 
 # .env 로딩
-load_dotenv("E:/work/MS_project_2/code/.env")
+load_dotenv()
 
 # 환경변수
 embedding_api_key = os.getenv('Embedding_API_KEY')
