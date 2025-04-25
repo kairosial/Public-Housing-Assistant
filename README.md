@@ -33,3 +33,31 @@
   <img alt="Azure" src="https://img.shields.io/badge/Azure-0089D6?style=for-the-badge&logoColor=white" />
   <img alt="OpenAI" src="https://img.shields.io/badge/OpenAI-412991?style=for-the-badge&logo=OpenAI&logoColor=white" />
 </p>
+
+## 🧑🏻‍💻 Developers
+
+<div style="overflow-x: auto;">
+  <table align="center">
+    <tr>
+      <td align="center"><img src="https://github.com/suyeon0702.png" style="width: 90%; height: auto; /></td>
+      <td align="center"><img src="https://github.com/kairosial.png" style="width: 90%; height: auto; /></td>
+      <td align="center"><img src="https://github.com/walkerprocess.png" style="width: 90%; height: auto; /></td>
+      <td align="center"><img src="https://github.com/jsoo5.png" style="width: 90%; height: auto; /></td>
+      <td align="center"><img src="https://github.com/hongwon1031.png" style="width: 90%; height: auto; /></td>
+    </tr>
+    <tr>
+      <td align="center"><a href="https://github.com/suyeon0702">김수연</a></td>
+      <td align="center"><a href="https://github.com/kairosial">김승연</a></td>
+      <td align="center"><a href="https://github.com/walkerprocess">김현성</a></td>
+      <td align="center"><a href="https://github.com/jsoo5">오지수</a></td>
+      <td align="center"><a href="https://github.com/hongwon1031">윤홍원</a></td>
+    </tr>
+    <tr>
+      <td align="center">Project planning<br />Team coordination<br />Data preprocessing<br /></td>
+      <td align="center">Architecture design<br />RAG development<br />Server integration</td>
+      <td align="center">Data preprocessing<br />Demo video<br />Azure test</td>
+      <td align="center">Data preprocessing<br />Presentation design<br />Server integration</td>
+      <td align="center">RAG development<br />KakaoTalk integration<br />UI/UX<br /></td>
+    </tr>
+  </table>
+</div>
