@@ -39,11 +39,11 @@
 <div style="overflow-x: auto;">
   <table align="center">
     <tr>
-      <td align="center"><img src="https://github.com/suyeon0702.png" style="width: 90%; height: auto; /></td>
-      <td align="center"><img src="https://github.com/kairosial.png" style="width: 90%; height: auto; /></td>
-      <td align="center"><img src="https://github.com/walkerprocess.png" style="width: 90%; height: auto; /></td>
-      <td align="center"><img src="https://github.com/jsoo5.png" style="width: 90%; height: auto; /></td>
-      <td align="center"><img src="https://github.com/hongwon1031.png" style="width: 90%; height: auto; /></td>
+      <td align="center"><img src="https://github.com/suyeon0702.png" style="width: 90%; height: auto;" /></td>
+      <td align="center"><img src="https://github.com/kairosial.png" style="width: 90%; height: auto;" /></td>
+      <td align="center"><img src="https://github.com/walkerprocess.png" style="width: 90%; height: auto;" /></td>
+      <td align="center"><img src="https://github.com/jsoo5.png" style="width: 90%; height: auto;" /></td>
+      <td align="center"><img src="https://github.com/hongwon1031.png" style="width: 90%; height: auto;" /></td>
     </tr>
     <tr>
       <td align="center"><a href="https://github.com/suyeon0702">김수연</a></td>
