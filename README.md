@@ -53,11 +53,31 @@
       <td align="center"><a href="https://github.com/hongwon1031">윤홍원</a></td>
     </tr>
     <tr>
-      <td align="center">Project planning<br />Team coordination<br />Data preprocessing<br /></td>
-      <td align="center">Architecture design<br />RAG development<br />Server integration</td>
-      <td align="center">Data preprocessing<br />Demo video<br />Azure test</td>
-      <td align="center">Data preprocessing<br />Presentation design<br />Server integration</td>
-      <td align="center">RAG development<br />KakaoTalk integration<br />UI/UX<br /></td>
+      <td align="center" width="20%">
+        Project planning<br />
+        Team coordination<br />
+        Data preprocessing
+      </td>
+      <td align="center" width="20%">
+        Architecture design<br />
+        RAG development<br />
+        Server integration
+      </td>
+      <td align="center" width="20%">
+        Data preprocessing<br />
+        Demo video<br />
+        Azure test
+      </td>
+      <td align="center" width="20%">
+        Data preprocessing<br />
+        Presentation design<br />
+        Server integration
+      </td>
+      <td align="center" width="20%">
+        RAG development<br />
+        KakaoTalk integration<br />
+        UI/UX<br />
+      </td>
     </tr>
   </table>
 </div>
