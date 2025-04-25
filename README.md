@@ -53,30 +53,30 @@
       <td align="center"><a href="https://github.com/hongwon1031">윤홍원</a></td>
     </tr>
     <tr>
-      <td align="center" style="white-space: nowrap; min-width: 220px;">
-        Project planning<br />
-        Team coordination<br />
-        Data preprocessing
+      <td align="center" style="min-width: 220px;">
+        <div>Project planning</div>
+        <div>Team coordination</div>
+        <div>Data preprocessing</div>
       </td>
-      <td align="center" style="white-space: nowrap; min-width: 220px;">
-        Architecture design<br />
-        RAG development<br />
-        Server integration
+      <td align="center" style="min-width: 220px;">
+        <div>Architecture design</div>
+        <div>RAG development</div>
+        <div>Server integration</div>
       </td>
-      <td align="center" style="white-space: nowrap; min-width: 220px;">
-        Data preprocessing<br />
-        Demo video<br />
-        Azure test
+      <td align="center" style="min-width: 220px;">
+        <div>Data preprocessing</div>
+        <div>Demo video</div>
+        <div>Azure test</div>
       </td>
-      <td align="center" style="white-space: nowrap; min-width: 220px;">
-        Data preprocessing<br />
-        Presentation design<br />
-        Server integration
+      <td align="center" style="min-width: 220px;">
+        <div>Data preprocessing</div>
+        <div>Presentation design</div>
+        <div>Server integration</div>
       </td>
-      <td align="center" style="white-space: nowrap; min-width: 220px;">
-        RAG development<br />
-        KakaoTalk integration<br />
-        UI/UX<br />
+      <td align="center" style="min-width: 220px;">
+        <div>RAG development</div>
+        <div>KakaoTalk integration</div>
+        <div>UI/UX</div>
       </td>
     </tr>
   </table>
