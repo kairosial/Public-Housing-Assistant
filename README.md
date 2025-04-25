@@ -26,12 +26,14 @@
 
 <p>
   <img alt="Python" src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=Python&logoColor=white" />
+  <img alt="Azure OpenAI" src="https://img.shields.io/badge/Azure OpenAI-412991?style=for-the-badge&logo=OpenAI&logoColor=white" />
   <img alt="LangChain" src="https://img.shields.io/badge/LangChain-1C3C3C?style=for-the-badge&logo=LangChain&logoColor=white" />
   <img alt="Flask" src="https://img.shields.io/badge/Flask-000000?style=for-the-badge&logo=Flask&logoColor=white" />
   <img alt="ngrok" src="https://img.shields.io/badge/ngrok-1F1E37?style=for-the-badge&logo=ngrok&logoColor=white" />
   <img alt="kakaotalk" src="https://img.shields.io/badge/kakaotalk-FFCD00?style=for-the-badge&logo=kakaotalk&logoColor=white" />
-  <img alt="Azure" src="https://img.shields.io/badge/Azure-0089D6?style=for-the-badge&logoColor=white" />
-  <img alt="OpenAI" src="https://img.shields.io/badge/OpenAI-412991?style=for-the-badge&logo=OpenAI&logoColor=white" />
+  <img alt="Azure AI Search" src="https://img.shields.io/badge/Azure AI Search-0089D6?style=for-the-badge&logoColor=white" />
+  <img alt="Azure Document Intelligence" src="https://img.shields.io/badge/Azure Document Intelligence-0089D6?style=for-the-badge&logoColor=white" />
+  <img alt="Azure Virtual Machine" src="https://img.shields.io/badge/Azure Virtual Machine-0089D6?style=for-the-badge&logoColor=white" />
 </p>
 
 ## 🧑🏻‍💻 Developers
